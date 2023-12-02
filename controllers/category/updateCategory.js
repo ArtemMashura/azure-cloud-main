@@ -1,6 +1,7 @@
 const { TableClient } = require("@azure/data-tables");
 
 const handleUpdateCategory = async (req, res) => {
+    console.log(req.body)
     const { categoryName, categoryParent, categoryVisibleName, childrenAdd, childrenRemove } = req.body;
     let feedback = []
     try {
