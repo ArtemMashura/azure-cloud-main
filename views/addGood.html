@@ -1,4 +1,16 @@
 <form>
+    <label>І'мя у бд</label>
+    <input type="text" name="name" id="name">
+
+    <label >І'мя батьківскої категорії</label>
+    <input type="text" name="categoryName" id="categoryName">
+
+    <label >І'мя яке бачать користувачі</label>
+    <input type="text" name="visibleName" id="visibleName">
+
+    <label >Ціна</label>
+    <input type="text" name="price" id="price">
+
     <input type="file" name="file" id="files">
     <button type="submit">Submit</button>
 
@@ -17,24 +29,23 @@
 
         
         const uploadImage = async (event) => {
-            const name = document.getElementById("name");
+            const nameElement = document.getElementById("name");
+            const categoryNameElement = document.getElementById("categoryName");
+            const visibleNameElement = document.getElementById("visibleName");
+            const priceElement = document.getElementById("price");
+
             const files = document.getElementById("files");
+
+            let goodName = nameElement.value
+            let categoryName = categoryNameElement.value
+            let goodVisibleName = visibleNameElement.value
+            let price = priceElement.value
+
             let text = await convertBase64(files.files[0])
-            // var formData = new FormData();
-            var formData = {}
-            // Creates empty formData object
-            // formData.append("name", name.value);
-            // Appends value of text input
             var fileRes = files.files[0].name.split('.').pop();
-            formData.image64 = text
-            formData.fileRes = fileRes
-            for(let i = 0; i < files.files.length; i++) {
-                
-            }
-            // Appends value(s) of file input
-            // Post data to Node and Express server:
-            let data = {imageBase64: text, fileRes: fileRes}
-            fetch('http://localhost:3500/adminpanel/', {
+            
+            let data = {goodName: goodName, categoryName: categoryName, goodVisibleName: goodVisibleName, price: price, imageBase64: text, fileRes: fileRes}
+            fetch('http://localhost:3500/adminpanel/addGood', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

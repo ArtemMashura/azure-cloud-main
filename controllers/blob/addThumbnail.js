@@ -1,5 +1,4 @@
 const { BlobServiceClient } = require("@azure/storage-blob");
-var fs = require('fs')
 const { v1: uuidv1 } = require("uuid");
 
 const handleAddThumbnail = async (req, res) => {
@@ -31,7 +30,7 @@ const handleAddThumbnail = async (req, res) => {
         console.log(
         `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`
         );
-        res.status(201).json({'success': `New blob ${blobName} created`})
+        res.status(201).json({'success': `New blob ${blobName} created at url ${blockBlobClient.url}`})
 
         
     } catch (err){

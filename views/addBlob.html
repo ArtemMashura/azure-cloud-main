@@ -19,22 +19,12 @@
         const uploadImage = async (event) => {
             const name = document.getElementById("name");
             const files = document.getElementById("files");
+
             let text = await convertBase64(files.files[0])
-            // var formData = new FormData();
-            var formData = {}
-            // Creates empty formData object
-            // formData.append("name", name.value);
-            // Appends value of text input
             var fileRes = files.files[0].name.split('.').pop();
-            formData.image64 = text
-            formData.fileRes = fileRes
-            for(let i = 0; i < files.files.length; i++) {
-                
-            }
-            // Appends value(s) of file input
-            // Post data to Node and Express server:
+            
             let data = {imageBase64: text, fileRes: fileRes}
-            fetch('http://localhost:3500/adminpanel/', {
+            fetch('http://localhost:3500/adminpanel/addBlob', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

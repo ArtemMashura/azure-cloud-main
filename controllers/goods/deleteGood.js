@@ -2,7 +2,7 @@ const { TableClient } = require("@azure/data-tables");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { v1: uuidv1 } = require("uuid");
 
-const handleAddGood = async (req, res) => {
+const handleDeleteGood = async (req, res) => {
     console.log(1)
     const {goodName, categoryName, goodVisibleName, price, imageBase64, fileRes } = req.body;
     if (!goodVisibleName){
@@ -18,16 +18,7 @@ const handleAddGood = async (req, res) => {
         // Get a block blob client
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-        // Display blob name and url
-        console.log(
-        `\nUploading to Azure storage as blob\n\tname: ${blobName}:\n\tURL: ${blockBlobClient.url}`
-        );
-        var thumbnailURL = blockBlobClient.url
         
-        var test = imageBase64.split(',')
-
-        
-        var buf = Buffer.from(test[1], 'base64')
 
         
         
@@ -55,4 +46,4 @@ const handleAddGood = async (req, res) => {
     }
 }
 
-module.exports = {handleAddGood}
+module.exports = {handleDeleteGood}
