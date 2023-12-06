@@ -1,5 +1,7 @@
 <form>
-    
+    <label >І'мя товару у ДБ</label>
+    <input type="text" name="goodName" id="goodName">
+
     <label >І'мя батьківскої категорії</label>
     <input type="text" name="categoryName" id="categoryName">
 
@@ -27,12 +29,14 @@
 
         
         const uploadImage = async (event) => {
+            const goodNameElement = document.getElementById("goodName");
             const categoryNameElement = document.getElementById("categoryName");
             const visibleNameElement = document.getElementById("visibleName");
             const priceElement = document.getElementById("price");
 
             const files = document.getElementById("files");
 
+            let goodName = goodNameElement.value
             let categoryName = categoryNameElement.value
             let goodVisibleName = visibleNameElement.value
             let price = priceElement.value
@@ -40,9 +44,9 @@
             let text = await convertBase64(files.files[0])
             var fileRes = files.files[0].name.split('.').pop();
             
-            let data = {categoryName: categoryName, goodVisibleName: goodVisibleName, price: price, imageBase64: text, fileRes: fileRes}
-            fetch('http://localhost:3500/adminpanel/addGood', {
-                method: 'POST',
+            let data = {goodName: goodName, categoryName: categoryName, goodVisibleName: goodVisibleName, price: price, imageBase64: text, fileRes: fileRes}
+            fetch('http://localhost:3500/adminpanel/editGood', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },

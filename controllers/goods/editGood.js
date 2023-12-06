@@ -1,14 +1,11 @@
 const { TableClient } = require("@azure/data-tables");
 const { BlobServiceClient } = require("@azure/storage-blob");
-const { v1: uuidv1 } = require("uuid");
 
-const handleAddGood = async (req, res) => {
-    console.log(1)
+const handleEditGood = async (req, res) => {
     const {goodName, categoryName, goodVisibleName, price, imageBase64, fileRes } = req.body;
-    if (!goodVisibleName){
-        goodVisibleName = goodName;
-    }
+    
     try {
+        const tableClient = TableClient.fromConnectionString(process.env.connString, "goods", { allowInsecureConnection: true } );
         const task = {
             partitionKey: "Item",
             rowKey: goodName,
@@ -18,7 +15,14 @@ const handleAddGood = async (req, res) => {
                 process.env.AZURE_STORAGE_BLOB_CONNECTION_STRING
             );
             const containerClient = blobServiceClient.getContainerClient("test");
-            const blobName = 'image_' + uuidv1() + '.' + fileRes;
+
+            
+
+            let data = await tableClient.getEntity("Item", goodName)
+
+            const blobName = data.thumbnailName
+    
+            // Get a block blob client
     
             // Get a block blob client
             const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -32,19 +36,19 @@ const handleAddGood = async (req, res) => {
             
             var buf = Buffer.from(test[1], 'base64')
     
+            const blobOptions = { blobHTTPHeaders: { blobContentType: `image/${fileRes}` } };
             
-            
-            const uploadBlobResponse = await blockBlobClient.upload(buf, buf.length);
+            const uploadBlobResponse = await blockBlobClient.upload(buf, buf.length, blobOptions);
             console.log(
             `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`
             );
-            task.thumbnailURL = blockBlobClient.url
+            // task.thumbnailURL = blockBlobClient.url
+            // task.thumbnailName = blobName
         }
         
 
             
         
-        const tableClient = TableClient.fromConnectionString(process.env.connString, "goods", { allowInsecureConnection: true } );
         
         if (categoryName){
             task.category = categoryName
@@ -64,4 +68,4 @@ const handleAddGood = async (req, res) => {
     }
 }
 
-module.exports = {handleAddGood}
+module.exports = {handleEditGood}

@@ -16,6 +16,7 @@ app.use(express.json({limit: '50mb'}));
 
 app.use('/categories', require('./routes/categories'));
 app.use('/adminpanel', require('./routes/adminpanel'));
+app.use('/goods', require('./routes/goods'));
 
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(

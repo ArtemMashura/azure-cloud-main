@@ -1,0 +1,34 @@
+<body onload="getData()">
+    <label id="name"></label>
+    <label id="ammount"></label>
+    <img id="thumbnail"></img>
+    <img id="preview"></img>
+</body>
+
+<script>
+    async function getData() {
+        let fil = "Computers"
+        let filter = {filter: fil}
+        var tableData = await fetch('http://localhost:3500/goods/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(filter) // Payload is formData object
+                
+        })
+        .then(res => res.json())
+        .then(data => {
+            return data
+        } );
+        console.log(tableData)
+        const image = document.getElementById("thumbnail");
+        // image.src = tableData.data[0].thumbnailURL
+        const preview = document.getElementById("preview");
+        preview.src = tableData.data[0].previewURL
+        const name = document.getElementById("name");
+        name.innerHTML = tableData.data[0].visibleName
+        const ammount = document.getElementById("ammount");
+        ammount.innerHTML = `У даті з беку є ${tableData.data.length} елементів категорії ${fil}`
+    }
+</script>
