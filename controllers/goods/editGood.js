@@ -1,5 +1,5 @@
 const { TableClient } = require("@azure/data-tables");
-const { BlobServiceClient } = require("@azure/storage-blob");
+const { QueueClient } = require("@azure/storage-queue");
 
 const handleEditGood = async (req, res) => {
     const {goodName, categoryName, goodVisibleName, price, imageBase64, fileRes } = req.body;
@@ -11,39 +11,17 @@ const handleEditGood = async (req, res) => {
             rowKey: goodName,
         };
         if (imageBase64 && fileRes){
-            const blobServiceClient = BlobServiceClient.fromConnectionString(
-                process.env.AZURE_STORAGE_BLOB_CONNECTION_STRING
-            );
-            const containerClient = blobServiceClient.getContainerClient("test");
+            const queueName = "pending-thumbnails";
+            const queueClient = new QueueClient(process.env.AZURE_STORAGE_QUEUE_CONNECTION_STRING, queueName);
 
-            
+            var test = imageBase64.split(',')
 
             let data = await tableClient.getEntity("Item", goodName)
-
             const blobName = data.thumbnailName
-    
-            // Get a block blob client
-    
-            // Get a block blob client
-            const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    
-            // Display blob name and url
-            console.log(
-            `\nUploading to Azure storage as blob\n\tname: ${blobName}:\n\tURL: ${blockBlobClient.url}`
-            );            
-            var test = imageBase64.split(',')
-    
-            
-            var buf = Buffer.from(test[1], 'base64')
-    
-            const blobOptions = { blobHTTPHeaders: { blobContentType: `image/${fileRes}` } };
-            
-            const uploadBlobResponse = await blockBlobClient.upload(buf, buf.length, blobOptions);
-            console.log(
-            `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`
-            );
-            // task.thumbnailURL = blockBlobClient.url
-            // task.thumbnailName = blobName
+
+            const queueData = JSON.stringify([test[1], fileRes, blobName, goodName])
+            await queueClient.sendMessage(queueData);
+
         }
         
 

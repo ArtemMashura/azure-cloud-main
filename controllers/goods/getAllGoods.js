@@ -21,7 +21,6 @@ const handleGetFilteredGoods = async (req, res) => {
             }
 
             categoryData.forEach(entity => {
-
                 if (entity.visibleName === `${filter}`){
                     currentParent = entity.parent
                     categorySet.add(entity.visibleName)
@@ -65,14 +64,8 @@ const handleGetFilteredGoods = async (req, res) => {
                 categoryTree = "Bad request"
             }
             
-
-            
         }
         
-        
-
-
-
         const tableClient = TableClient.fromConnectionString(process.env.connString, "goods", { allowInsecureConnection: true } );
         let tableData = tableClient.listEntities();
         var data = []
