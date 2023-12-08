@@ -9,7 +9,6 @@ const handleAddGood = async (req, res) => {
     try {
         const blobName = 'image_' + uuidv1() + '.' + fileRes;
         var test = imageBase64.split(',')
-
         var urlData = await updateEntity.changeThumbnailAndPreview(test[1], fileRes, blobName)
         thumbnailURL = urlData[0]
         previewURL = urlData[1]
@@ -19,16 +18,17 @@ const handleAddGood = async (req, res) => {
         const task = {
             partitionKey: "Item",
             rowKey: goodName,
-            category: categoryName,
-            visibleName: goodVisibleName,
+            category: categoryName,         // тут би зробити перевірку на те що ця категорія існує, але я думаю це має зробити фронт-ендер на стороні адмін-панелі
+            visibleName: goodVisibleName,   // і у цій панелі вибір категорії зробити як випадаючий список у якому компоненти ми беремо с беку методом вибору усіх елементів таблиці
             price: price,
             thumbnailName: blobName,
             thumbnailURL: thumbnailURL,
             previewName: blobName,
             previewURL: previewURL
         };
-        await tableClient.createEntity(task);
-        res.status(201).json({'success': `New good ${goodName} created`})
+        let insertResult = await tableClient.createEntity(task);
+        res.status(201).json({'result': insertResult, 'newGoodRowKey': goodName})
+
     } catch (err){
         console.log(err)
         res.status(404).json({"error": err})

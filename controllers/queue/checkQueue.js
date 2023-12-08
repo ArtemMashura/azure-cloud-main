@@ -16,7 +16,13 @@ async function handleConstantlyCheckQueue() {
                 const receivedMessagesResponse = await queueClient.receiveMessages();
                 for (i = 0; i < receivedMessagesResponse.receivedMessageItems.length; i++) {
                     receivedMessage = receivedMessagesResponse.receivedMessageItems[i];
-                    
+                    if (receivedMessage.dequeueCount > 2) {
+                        await queueClient.deleteMessage(
+                            receivedMessage.messageId,
+                            receivedMessage.popReceipt
+                        );
+                        continue
+                    }
                     let blobData = JSON.parse(receivedMessage.messageText)
                     let [imageBase64, fileRes, blobName, goodName] = blobData
 

@@ -12,23 +12,28 @@ const handleDeleteCategory = async (req, res) => {
         if (cascade === true) {
             let cascadeCollapseQueue = [categoryName]
             do {
-                console.log(cascadeCollapseQueue[0])
-                let start = await tableClient.getEntity("GoodsCategory", cascadeCollapseQueue[0])
+                try {
+                    var start = await tableClient.getEntity("GoodsCategory", cascadeCollapseQueue[0])
+                } catch {
+                    cascadeCollapseQueue.shift()
+                    continue
+                }
                 let childCategories = JSON.parse(start.childCategories)
                 childCategories.forEach(element => {
                     cascadeCollapseQueue.push(element)
                 });
-                await tableClient.deleteEntity("GoodsCategory", cascadeCollapseQueue[0]);
+                var deleteResult = await tableClient.deleteEntity("GoodsCategory", cascadeCollapseQueue[0]);
                 cascadeCollapseQueue.shift()
             } while (cascadeCollapseQueue.length > 0)
-            res.status(201).json({'success': `Category ${categoryName} deleted with cascade}`})
+            res.status(201).json({'output': `Category ${categoryName} deleted with cascade`, 'result': deleteResult})
 
         } else {
-            await tableClient.deleteEntity("GoodsCategory", categoryName);
-            res.status(201).json({'success': `Category ${categoryName} deleted}`})
+            var deleteResult = await tableClient.deleteEntity("GoodsCategory", categoryName);
+            res.status(201).json({'output': `Category ${categoryName} deleted`, 'result': deleteResult})
         }
       
     } catch (err){
+        console.log(err)
         res.status(404).json({"error": err})
     }
 }

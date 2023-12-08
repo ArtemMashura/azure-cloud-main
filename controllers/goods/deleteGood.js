@@ -10,6 +10,7 @@ const handleDeleteGood = async (req, res) => {
     try {
         const tableClient = TableClient.fromConnectionString(process.env.connString, "goods", { allowInsecureConnection: true } );
         if (deleteBlob === true) {
+            let blobDeletionResult = []
             const blobServiceClient = BlobServiceClient.fromConnectionString(
                 process.env.AZURE_STORAGE_BLOB_CONNECTION_STRING
             );
@@ -35,20 +36,20 @@ const handleDeleteGood = async (req, res) => {
             }
             
               
-            const deleteBlobResponce = await blockBlobClient.delete(options);
+            const deleteBlobResponse = await blockBlobClient.delete(options);
+            blobDeletionResult.push(deleteBlobResponse)
             
-            console.log(
-            `Blob was deleted successfully. requestId: ${deleteBlobResponce.requestId}`
-            );
-
-            const deletePreviewBlobResponce = await previewBlockBlobClient.delete(options);
-            
-            console.log(
-            `Blob was deleted successfully. requestId: ${deletePreviewBlobResponce.requestId}`
-            );
+            const deletePreviewBlobResponse = await previewBlockBlobClient.delete(options);
+            blobDeletionResult.push(deletePreviewBlobResponse)
+        
+            let result = await tableClient.deleteEntity("Item", goodName);
+            res.status(201).json({'output': `Deleted good ${goodName} and its blobs`, "result": result, 'blobDeletionResult': JSON.stringify(blobDeletionResult)})
         }
-        var result = await tableClient.deleteEntity("Item", goodName);
-        res.status(201).json({'success': `Good ${goodName} deleted`, "requestId": `${result.requestId}`})
+        else {
+            let result = await tableClient.deleteEntity("Item", goodName);
+            res.status(201).json({'output': `Deleted good ${goodName}`, "result": result})
+        }
+        
     } catch (err){
         console.log(err)
         res.status(404).json({"error": err})

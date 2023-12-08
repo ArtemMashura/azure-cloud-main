@@ -20,7 +20,7 @@ const handleEditGood = async (req, res) => {
             const blobName = data.thumbnailName
 
             const queueData = JSON.stringify([test[1], fileRes, blobName, goodName])
-            await queueClient.sendMessage(queueData);
+            var queueSendMessage = await queueClient.sendMessage(queueData);
 
         }
         
@@ -38,8 +38,9 @@ const handleEditGood = async (req, res) => {
             task.price = price
         }
         
-        await tableClient.updateEntity(task, "Merge");
-        res.status(201).json({'success': `Good ${goodName} updated`})
+        let updateResult = await tableClient.updateEntity(task, "Merge");
+        res.status(201).json({'result': updateResult, 'queueSendMessageResult': queueSendMessage})
+
     } catch (err){
         console.log(err)
         res.status(404).json({"error": err})

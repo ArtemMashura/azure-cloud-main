@@ -48,11 +48,11 @@ const handleCreateCategory = async (req, res) => {
                 childCategories: JSON.stringify(old_childCategories)
             };
             let updateParentResult = await tableClient.updateEntity(updateParent, "Merge");
-            res.status(201).json({'insert': insertResult, 'update': updateParentResult})
+            res.status(201).json({'result': insertResult, 'update': updateParentResult, 'newCategoryRowKey': categoryName})
         }
         else {
             let insertResult = await tableClient.createEntity(task);
-            res.status(201).json({'insert': insertResult})
+            res.status(201).json({'result': insertResult, 'newCategoryRowKey': categoryName})
         }
         
         

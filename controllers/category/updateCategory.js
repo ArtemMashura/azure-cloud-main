@@ -1,7 +1,6 @@
 const { TableClient } = require("@azure/data-tables");
 
 const handleUpdateCategory = async (req, res) => {
-    console.log(req.body)
     const { categoryName, categoryParent, categoryVisibleName, childrenAdd, childrenRemove } = req.body;
     let feedback = []
     try {
@@ -48,8 +47,8 @@ const handleUpdateCategory = async (req, res) => {
         }
         
 
-        await tableClient.updateEntity(task, "Merge");
-        res.status(201).json({'success': `Category ${categoryName} updated`, 'feedback': `${JSON.stringify(feedback)}`})
+        let updateResult = await tableClient.updateEntity(task, "Merge");
+        res.status(201).json({'result': updateResult, 'feedback': `${JSON.stringify(feedback)}`})
     } catch (err){
         console.log(err)
         res.status(404).json({"error": err})
