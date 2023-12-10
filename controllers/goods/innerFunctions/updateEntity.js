@@ -16,10 +16,11 @@ async function changeThumbnailAndPreview(imageBase64, fileRes, blobName){
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
     const previewsBlockBlobClient = previewContainerClient.getBlockBlobClient(blobName);
     const blobOptions = { blobHTTPHeaders: { blobContentType: `image/${fileRes}` } };
-
+    console.log(blobOptions)
                     
     var buf = Buffer.from(imageBase64, 'base64')
     const uploadBlobResponse = await blockBlobClient.upload(buf, buf.length, blobOptions);
+    console.log(uploadBlobResponse)
     var thumbnailURL = blockBlobClient.url
     
     const image = await Jimp.create(buf)
@@ -28,6 +29,7 @@ async function changeThumbnailAndPreview(imageBase64, fileRes, blobName){
     })
     const previewBuf = await image.getBufferAsync(`image/${fileRes}`)
     const previewUploadBlobResponse = await previewsBlockBlobClient.upload(previewBuf, previewBuf.length, blobOptions);
+    console.log(previewUploadBlobResponse)
     var previewURL = previewsBlockBlobClient.url
 
     return [thumbnailURL, previewURL]

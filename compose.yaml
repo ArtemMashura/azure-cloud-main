@@ -1,6 +1,6 @@
 # Comments are provided throughout this file to help you get started.
 # If you need more help, visit the Docker compose reference guide at
-# https://docs.docker.com/compose/compose-file/
+# https://docs.docker.com/go/compose-spec-reference/
 
 # Here the instructions define your application as a service called "server".
 # This service is built from the Dockerfile in the current directory.
@@ -11,10 +11,21 @@ services:
   server:
     build:
       context: .
+    depends_on:
+      - azurite
     environment:
       NODE_ENV: production
     ports:
-      - 3000:3000
+      - 3500:3500
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: "azurite"
+    hostname: azurite
+    command: azurite --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0 
+    ports:
+      - '10000:10000'
+      - '10001:10001'
+      - '10002:10002'
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
@@ -48,4 +59,3 @@ services:
 # secrets:
 #   db-password:
 #     file: db/password.txt
-

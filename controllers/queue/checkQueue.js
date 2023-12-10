@@ -16,6 +16,7 @@ async function handleConstantlyCheckQueue() {
                 const receivedMessagesResponse = await queueClient.receiveMessages();
                 for (i = 0; i < receivedMessagesResponse.receivedMessageItems.length; i++) {
                     receivedMessage = receivedMessagesResponse.receivedMessageItems[i];
+                    console.log(receivedMessage)
                     if (receivedMessage.dequeueCount > 2) {
                         await queueClient.deleteMessage(
                             receivedMessage.messageId,
