@@ -56,7 +56,7 @@ async function createTableIfDoesntExist(tableServiceClient, tableName) {
 }
 
 async function createBlobContainerIfDoesntExist(blobServiceClient, containerName) {
-    var options = { access: "blob"}
+    var options = { access: "container"}
     try {
         await blobServiceClient.createContainer(containerName, options)
     }

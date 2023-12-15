@@ -37,7 +37,7 @@ ENV AZURE_STORAGE_QUEUE_CONNECTION_STRING="DefaultEndpointsProtocol=http;Account
 
 
 # Expose the port that the application listens on.
-EXPOSE 3500
+EXPOSE 3500 10000 10001 10002
 
 # Run the application.
 CMD npm start
